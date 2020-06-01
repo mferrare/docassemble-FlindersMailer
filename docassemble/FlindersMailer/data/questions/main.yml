@@ -40,11 +40,11 @@ code: |
 ---
 # Prepares the recipient
 code: |
-  email_recipient = Individual()
+  MJFinvites.invites_list[i]['recipient'] = Individual()
   MJFinvites.invites_list[i]['recipient']
-  MJFinvites.invites_list[i]['recipient'].name.first = 'WLSSA
+  MJFinvites.invites_list[i]['recipient'].name.first = MJFinvites.invites_list[i]['first_name']
   MJFinvites.invites_list[i]['recipient'].name.last = MJFinvites.invites_list[i]['last_name']
-  MJFinvites.invites_list[i]['recipient'].email = 'wlssa@wlssa.org'
+  MJFinvites.invites_list[i]['recipient'].email = MJFinvites.invites_list[i]['email']
   MJFinvites.invites_list[i]['recipient'].organisation = MJFinvites.invites_list[i]['organisation']
 ---
 # Sends the email
