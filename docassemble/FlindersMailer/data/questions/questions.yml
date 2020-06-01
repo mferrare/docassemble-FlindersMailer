@@ -1,0 +1,31 @@
+---
+question: Import File
+subquestion: |
+  File should be:
+
+  - an Excel file (xls or xlsx)
+  - contain one sheet
+  - That sheet should contain columns with these names
+    - First Name
+    - Last Name
+    - Organisation
+    - Email
+
+  Any file that does not conform to these specs may fail
+fields:
+  - no label: data_file
+    datatype: file
+---
+question: List of Invitees
+subquestion: |
+  ${invites_table}
+continue button field: display_list
+---
+event: final_screen
+question: Email Send Status
+subquestion: |
+  ${ sent_invites }
+buttons:
+  - Exit: exit
+    url:  https://flinders.edu.au
+  - Restart: restart

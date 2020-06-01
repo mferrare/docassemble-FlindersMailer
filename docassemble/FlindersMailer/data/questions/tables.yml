@@ -1,0 +1,35 @@
+table: invites_table
+rows: MJFinvites.invites_list
+columns:
+  - Name: |
+      '<a href="mailto:{}">{} {}</a>'.format(row_item['email'], row_item['first_name'], row_item['last_name'])
+  - Organisation: |
+      row_item['organisation']
+edit:
+  - elements['first_name']
+  - elements['last_name']
+  - elements['email']
+  - elements['organisation']
+---
+# For editing a table row item
+question: Edit Item
+fields:
+  - First Name: MJFinvites.invites_list[i].elements['first_name']
+  - Last Name: MJFinvites.invites_list[i].elements['last_name']
+  - Organisation: MJFinvites.invites_list[i].elements['organisation']
+  - Email Address: MJFinvites.invites_list[i].elements['email']
+---
+# There is never another record
+code: |
+  MJFinvites.invites_list.there_is_another = False
+---
+table: sent_invites
+rows: MJFinvites.invites_list
+columns:
+  - Name: |
+      '<a href="mailto:{}">{} {}</a>'.format(row_item['email'], row_item['first_name'], row_item['last_name'])
+  - Organisation: |
+      row_item['organisation']
+  - Send Status: |
+      row_item['email_status']
+---

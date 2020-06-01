@@ -1,0 +1,96 @@
+---
+modules:
+  .invites_importer
+---
+include:
+  - questions.yml
+  - tables.yml
+  - signature.yml
+  - base64flinders_icon.yml
+---
+objects:
+  - MJFinvites: MJFInviteData
+  - email_sender: Individual
+  - email_cc: Individual
+---
+# This drives the program
+mandatory: True
+code: |
+  data_file
+  display_list
+  final_screen
+---
+# Initialise object and get invite data
+code: |
+  if not MJFinvites.populated:
+    MJFinvites.read_in_data(data_file)
+  MJFinvites.invites_list.gathered = True
+---
+# Sets the sender of the email
+code: |
+  email_sender.name.first = 'Mark'
+  email_sender.name.last = 'Ferraretto'
+  email_sender.email = 'mark.ferraretto@flinders.edu.au'
+---
+# Set's the CC
+code: |
+  email_cc.name.first = 'Tania'
+  email_cc.name.last = 'Leiman'
+  email_cc.email = 'tania.leiman@flinders.edu.au'
+---
+# Prepares the recipient
+code: |
+  email_recipient = Individual()
+  MJFinvites.invites_list[i]['recipient']
+  MJFinvites.invites_list[i]['recipient'].name.first = 'WLSSA
+  MJFinvites.invites_list[i]['recipient'].name.last = MJFinvites.invites_list[i]['last_name']
+  MJFinvites.invites_list[i]['recipient'].email = 'wlssa@wlssa.org'
+  MJFinvites.invites_list[i]['recipient'].organisation = MJFinvites.invites_list[i]['organisation']
+---
+# Sends the email
+code: |
+  MJFinvites.invites_list[i]['email_status'] = send_email(
+      sender=email_sender,
+      cc=email_cc,
+      to=MJFinvites.invites_list[i]['recipient'],
+      template=MJFemail_message,
+      attachments=[MJFinvites.invites_list[i]['attachment']]
+  )
+---
+# PDF attachment dictionary.  We create it this way so we can
+# reconsider() it for each iteration
+code: |
+  MJFinvites.invites_list[i]['PDF_Fields'] = dict()
+  MJFinvites.invites_list[i]['PDF_Fields']['full_name']    = MJFinvites.invites_list[i]['recipient'].name
+  MJFinvites.invites_list[i]['PDF_Fields']['organisation'] = MJFinvites.invites_list[i]['recipient'].organisation
+  MJFinvites.invites_list[i]['PDF_Fields']['email']        = MJFinvites.invites_list[i]['recipient'].email
+  MJFinvites.invites_list[i]['PDF_Fields']['first_name']   = '{},'.format(MJFinvites.invites_list[i]['recipient'].name.first.strip())
+reconsider: True
+---
+attachment:
+  - pdf template file: Presentation_Evening_Letter_for_Guests_v1.0.pdf
+    variable name: MJFinvites.invites_list[i]['attachment']
+    filename: Presentation Evening Invitation
+    editable: False
+    code: MJFinvites.invites_list[i]['PDF_Fields']
+---
+template: MJFemail_message
+subject: |
+  Invitation:  LLAW3301 Law in a Digital Age Presentation Evenings
+content: |
+  Dear ${MJFinvites.invites_list[i]['recipient'].name.first.strip()},
+
+  Please find **attached** an invitation to the 2020 Semester 1
+  *LLAW3301: Law in a Digital Age* virtual Presentation Evenings to be held
+  on **9, 10 and 11 June 2020** from 5:30pm to 7:30pm.  You are welcome to join us for one
+  or more of these virtual Presentation Evenings.
+
+  Registration is via [Eventbrite](https://www.eventbrite.com.au/e/law-in-a-digital-age-presentation-evenings-tickets-105062276096).
+  Feel free to forward this invitation to friends, colleagues and anyone
+  interested in using technology to increase access to justice.
+
+  Kind regards
+
+  Mark Ferraretto and Tania Leiman
+
+  ${email_signature}
